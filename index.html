@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TODO COSO 2025</title>
+    <style>
+      body { 
+        margin: 0; 
+        background-image: radial-gradient(circle, #000 25vmin, #024 100vmax);
+        overflow: hidden;
+        font-family: "Inconsolata", monospace;
+      }
+      #globeViz { 
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw; 
+        height: 100vh;
+      }
+      #ascii-title {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgb(32, 220, 128);
+        font-family: "Inconsolata", monospace;
+        white-space: pre;
+        font-size: min(1.5vw, 10px);
+        text-align: center;
+        z-index: 1000;
+        text-shadow: 0 0 5px rgba(32, 220, 128, 0.5),
+                     0 0 10px rgba(32, 220, 128, 0.3),
+                     0 0 15px rgba(32, 220, 128, 0.2);
+        animation: glow 2s ease-in-out infinite alternate;
+      }
+      #countdown {
+        position: fixed;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgb(32, 220, 128);
+        font-family: "Inconsolata", monospace;
+        white-space: pre;
+        font-size: min(4vw, 24px);
+        text-align: center;
+        z-index: 1000;
+        text-shadow: 0 0 5px rgba(32, 220, 128, 0.5),
+                     0 0 10px rgba(32, 220, 128, 0.3),
+                     0 0 15px rgba(32, 220, 128, 0.2);
+        animation: glow 2s ease-in-out infinite alternate;
+        line-height: 1.2;
+      }
+      @keyframes glow {
+        from {
+          text-shadow: 0 0 5px rgba(32, 220, 128, 0.5),
+                       0 0 10px rgba(32, 220, 128, 0.3),
+                       0 0 15px rgba(32, 220, 128, 0.2);
+        }
+        to {
+          text-shadow: 0 0 10px rgba(32, 220, 128, 0.6),
+                       0 0 20px rgba(32, 220, 128, 0.4),
+                       0 0 30px rgba(32, 220, 128, 0.3);
+        }
+      }
+      #textureCanvas {
+        display: none;
+      }
+      @media (max-width: 768px) {
+        #ascii-title {
+          font-size: min(2vw, 8px);
+          top: 10px;
+        }
+        #countdown {
+          font-size: min(6vw, 20px);
+          bottom: 30px;
+        }
+      }
+    </style>
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+    <script src="//unpkg.com/globe.gl"></script>
+  </head>
+  <body>
+    <pre id="ascii-title">         .*=++++++++++++++++=+==+++++++++==++=++++++++++++===-===++++++++++===-           
+         #-:%%%%%%%%%%%%%%%=.+%%%%%%%%%%%%#= +%%%%%%%%%%%%%#=::+%%%%%%%%%%%%#=-++         
+        .%#+++-.%%%%%%.=++-.%%%%%%:-=.%%%%%%:+%%%%%* +.+%%%%%*.%%%%%%-:=:%%%%%%:=*        
+        .%%%%#.#%%%%%+:%%%:=%%%%%% #=:%%%%%%:+%%%%%# #=:%%%%%%.+%%%%%# #-:%%%%%%.++       
+        .%%%%.+%%%%%# *%%# %%%%%%#.+-=%%%%%%.+%%%%%%.==:%%%%%%=.%%%%%%+-+.*%%%%%# #-      
+        .%%%--%%%%%%--%%%%=-*%%%%%%%%%%%%#*-.+%%%%%%%%%%%%%%#+:=-=*%%%%%%%%%%%%#+:#+      
+         +#%+++++++++%%%%%%%*++++++++++++*#%*++++++++++++++++#%%%%*+++++++++++++#%%+      
+          :%%%%%%%%%%%%%+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%+      
+     :----=+++++++++++++=+%#*+++++++++++++*%%%%#*++++++++++++*#%%%%#+++++++++++++*#*:     
+  .++-=*#%%%%%%%%%%%%%%%= =*#%%%%%%%%%%%%%*=-+-+#%%%%%%%%%%%%#+-==-*%%%%%%%%%%%%%#*=-++.  
+ .#:=%%%%%%#:=+++++++++= #%%%%%%*:+=.%%%%%%%+ #%%%%%%#..:*******- %%%%%%%*.++:#%%%%%%=:#: 
+ #--%%%%%%%:=%%%%%%%%%%--%%%%%%%:=%* %%%%%%%+.:+#%%%%%%%%%%%%#*=: =%%%%%%%.+%=:%%%%%%%=:#.
+*=:%%%%%%%+ +********** *%%%%%%%.=*--%%%%%%%+ +*****#*:::*%%%%%%%:.%%%%%%%*.+*.+%%%%%%%:-*
+%+:*%%%%%%%%##########+ -*%%%%%%%##%%%%%%%#=-=-+#%%%%%%%%%%%%%%#+:=-=*%%%%%%%#%%%%%%%%*:=%
+%%%*++++++++++++++++++=*%*++++++++++++++++*%%%%#*+++++++++++++++#%%%%*++++++++++++++++*%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*
+ :+#%%%%%%%%%%%%%%%%%%%%*#%%%%%%%%%%%%%%%%#+-:=*#%%%%%%%%%%%%%%#*=:-+#%%%%%%%%%%%%%%%%#+-</pre>
+    <canvas id="textureCanvas"></canvas>
+    <div id="globeViz"></div>
+    <pre id="countdown"></pre>
+    <script type="module">
+      // Crear textura ASCII
+      const asciiArt = `,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,:,,,,,,,,,,,,,,,:::::,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,:::::::;;+;+**++;:::,:::;++*****??***?%%%%%%??**??*+**+:;;:::::++;:::::,,,,,
+*???*+++***++****+++**+**???%SS?:,:;+*?%%SSSSSSS%????%%%%%????*?****+********??****?**++++
+%%S%?*??????*?????***?%%%%**?%SS?+?%SSS%%%S%SS%??%%??????????******?????********?????????%
+SSSS%%SSSSS%%????*??????%?**??%%SSSSSSSSSS%%?%????????************???*???******?%SSS%%SSSS
+%%%%SSSSSSSSSS?****+*??%???%%%%%SSSSSSSSSSS%??%????????**?+++++***+**+++++***??%%SSSSSSS%%
+%%%%%%%%SSSSSS?*+**+*?????%SSSSSSSSSSSSSSS%?*???%S%%%?*+*?*+++**+;;;;++***?%%%%%%SSSSS%%%%
+%%%%%%%%%%SSSSS%?**+?%%%%SSSSSSSS%%%%%SSS?*+;;;;++;;+*+;;***++++******?????%SSSSSSSS%%%%%%
+%%%%%%%%%%%%%SSSSS%*?%%%%%SSSSSSSS%%%%SS%;;;;;;;:;;;;+?*;;+?SS?**?%%%???%%S%SSSSSSSS%%%%%%
+%%%%%%%%%%%%%%%SSSSS%%%%%S%?%%SSSSSSSSSS%**++++++++++**?*?%SSSS%?%SSS%%?SSS%%SSSSSSSSS%%%%
+%%%%%%%%%%%%%%%%%%SSSSSSS?**????%SSSSSSSSS%%%%%?????*****%SSSSSSSSSSS%%S%%%S%SSSSSSSSSSS%S
+%%%%%%%%%%%%%%%%%%%%SSSS%*%%%%%?????%SSSSSSSSSS%????***%SSSSSSSSSSSSSS%%%%%%SS%%%%%SSSSSSS
+%%%%%%%%%%%%%%%%%%%%%%SSS%*?????**+?SSSSSSSSSSSS*******S%%SSSSSSSSSSSSSSSSSS%??%?%SSSSSSS%
+%%%%%%%%%%%%%%%%%%%%%%%SSSS*+??***?SSSSS%%%%SSSS*+++*?%%?%SSSS%%%%%%%SSSS%?*+++++*%SSS%SS%
+%%%%%%%%%%%%%%%%%%%%%%%SSSS*****%SSSSS%%%%%%%SSS%*++?%SS%SSSS%%%%%%%%%%SS?+****+++*%SSSSSS
+%%%%%%%%%%%%%%%%%%%%%%%SSS%*+*?%SSSSS%%%%%%%%%SSS%%%SSSSSS%%%%%%%%%%%%%%S%%%%S%%??%SSSSS%%
+%%%%%%%%%%%%%%%%%%%%%%%SSS?*?SSSSSS%%%%%%%%%%%%SSSSSSS%%%%%%%%%%%%%%%%%%%SSSSSSSS%SSSS%%%S
+%%%%%%%%%%%%%%%%%%%%%%%%SS??%S%SSS%%%%%%%%%%%%%%%%%%%%%%%%S%%%%%%%%%%SSSSSSSSSSSSSSSSSSSSS
+%%%%%%%%%%%%%SSS%%%SSSSSSSSS%%%%%%%%%%%SSSSSSSSSSSSSSSSSS%%%SSSSS%%%%%%%%%S%%%%%%SSSSSSS%%
+SSSSSSSS%%%%%%%%%%%%???%%%*+;;%SSSSSSSS%??**++*+++**+++;;:::;++++::::::::::::::::;;++*?%SS
+*****+++;;;::::::;;:,,::::,,,,;;+*++++;:::,,,,,,,,,,,,,,,,::::,,,,:::::,,,,,,::,,,,,::++++
+,,,,,,,:::::::,,,,,,,,,::::::,,,,,,,,,,,,,,,:::::::::::::::::::::::::::::::::::,,,,,::,,,,`;
+
+      // Crear canvas y contexto
+      const canvas = document.getElementById('textureCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Configurar tamaño del canvas
+      canvas.width = 2048;
+      canvas.height = 1024;
+      
+      // Dibujar ASCII art en el canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.font = '24px Inconsolata';
+      
+      const lines = asciiArt.split('\n');
+      const lineHeight = canvas.height / lines.length;
+      const charWidth = canvas.width / lines[0].length;
+      
+      // Fondo negro sólido en lugar del gradiente
+      ctx.fillStyle = 'rgba(0, 0, 16, 0.9)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      lines.forEach((line, i) => {
+        [...line].forEach((char, j) => {
+          if (char === '%' || char === 'S') {
+            // Agua con brillo
+            ctx.fillStyle = 'rgba(68, 119, 255, 0.9)';
+            ctx.shadowColor = 'rgba(68, 119, 255, 0.8)';
+            ctx.shadowBlur = 5;
+          } else if (char === ',') {
+            ctx.fillStyle = 'rgba(0, 32, 64, 0.3)';
+            ctx.shadowBlur = 0;
+          } else if (char === ' ' || char === '\n') {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+            ctx.shadowBlur = 0;
+          } else {
+            // Tierra con brillo
+            ctx.fillStyle = 'rgba(32, 180, 96, 0.8)';
+            ctx.shadowColor = 'rgba(32, 180, 96, 0.6)';
+            ctx.shadowBlur = 3;
+          }
+          ctx.fillText(char, j * charWidth, (i + 1) * lineHeight);
+        });
+      });
+
+      // Crear URL de la textura
+      const textureUrl = canvas.toDataURL();
+
+      const coords = { lat: -31.4289, lng: -62.0821 }; // San Francisco, Córdoba, Argentina
+      
+      const globe = Globe()
+        // Texturas del globo
+        .globeImageUrl(textureUrl)
+        .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+        .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+        // Efectos de atmósfera
+        .atmosphereColor('rgb(32, 220, 128)')
+        .atmosphereAltitude(0.25)
+        // Configuración del punto y etiqueta
+        .labelsData([coords])
+        .labelLat(d => d.lat)
+        .labelLng(d => d.lng)
+        .labelText(() => 'San Francisco, Cordoba, Argentina')
+        .labelSize(3)
+        .labelAltitude(0.2)
+        .labelColor(() => 'rgb(32, 220, 128)')
+        .labelDotRadius(1.2)
+        .labelResolution(3)
+        .labelLabel(d => d.text)
+        // Punto principal
+        .pointsData([coords])
+        .pointAltitude(0.12)
+        .pointColor(() => 'rgb(32, 220, 128)')
+        .pointRadius(1.2)
+        .pointResolution(3)
+        // Anillos de resaltado
+        .ringsData([coords])
+        .ringColor(() => 'rgb(32, 220, 128)')
+        .ringMaxRadius(3)
+        .ringPropagationSpeed(1)
+        .ringRepeatPeriod(1500)
+        // Brillo y ambiente
+        .showGraticules(false)
+        .showAtmosphere(true)
+        (document.getElementById('globeViz'));
+
+      // Rotación automática continua
+      globe.controls().autoRotate = true;
+      globe.controls().autoRotateSpeed = 0.5;
+      globe.controls().enableDamping = true;
+      globe.controls().dampingFactor = 0.1;
+
+      // Posicionar inicialmente la cámara
+      globe.pointOfView({
+        lat: coords.lat,
+        lng: coords.lng,
+        altitude: 3.5
+      }, 1000);
+
+      // Manejar el redimensionamiento de la ventana
+      window.addEventListener('resize', () => {
+        globe.width(window.innerWidth);
+        globe.height(window.innerHeight);
+      });
+
+      // Contador ASCII
+      const endDate = new Date('2025-01-26T23:59:59');
+      
+      function updateCountdown() {
+        const now = new Date();
+        const diff = endDate - now;
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        const countdownEl = document.getElementById('countdown');
+        countdownEl.innerHTML = `${days.toString().padStart(2, '0')} Dias, ${hours.toString().padStart(2, '0')} Horas, ${minutes.toString().padStart(2, '0')} Minutos, ${seconds.toString().padStart(2, '0')} Segundos`;
+      }
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    </script>
+  </body>
+</html>
