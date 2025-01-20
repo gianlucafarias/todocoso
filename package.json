@@ -6,14 +6,18 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "start": "vite"
+    "preview": "vite preview --port $PORT --host",
+    "start": "vite preview --port $PORT --host"
   },
   "devDependencies": {
     "sass-embedded": "^1.83.4",
     "vite": "^5.0.8"
   },
   "dependencies": {
-    "three": "^0.160.1"
+    "three": "^0.160.1",
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
