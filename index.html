@@ -41,7 +41,7 @@
         transform: translateX(-50%);
         color: rgb(32, 220, 128);
         font-family: "Inconsolata", monospace;
-        white-space: pre;
+        white-space: pre-wrap;
         font-size: min(4vw, 24px);
         text-align: center;
         z-index: 1000;
@@ -50,6 +50,8 @@
                      0 0 15px rgba(32, 220, 128, 0.2);
         animation: glow 2s ease-in-out infinite alternate;
         line-height: 1.2;
+        width: 90vw;
+        max-width: 800px;
       }
       @keyframes glow {
         from {
@@ -72,8 +74,11 @@
           top: 10px;
         }
         #countdown {
-          font-size: min(6vw, 20px);
-          bottom: 30px;
+          font-size: min(5vw, 16px);
+          bottom: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
         }
       }
     </style>
@@ -244,11 +249,23 @@ SSSSSSSS%%%%%%%%%%%%???%%%*+;;%SSSSSSSS%??**++*+++**+++;;:::;++++:::::::::::::::
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
         
         const countdownEl = document.getElementById('countdown');
-        countdownEl.innerHTML = `${days.toString().padStart(2, '0')} Dias, ${hours.toString().padStart(2, '0')} Horas, ${minutes.toString().padStart(2, '0')} Minutos, ${seconds.toString().padStart(2, '0')} Segundos`;
+        
+        if (window.innerWidth <= 768) {
+          countdownEl.innerHTML = `
+${days.toString().padStart(2, '0')} Días
+${hours.toString().padStart(2, '0')} Horas
+${minutes.toString().padStart(2, '0')} Minutos
+${seconds.toString().padStart(2, '0')} Segundos`;
+        } else {
+          countdownEl.innerHTML = `${days.toString().padStart(2, '0')} Días, ${hours.toString().padStart(2, '0')} Horas, ${minutes.toString().padStart(2, '0')} Minutos, ${seconds.toString().padStart(2, '0')} Segundos`;
+        }
       }
 
       updateCountdown();
       setInterval(updateCountdown, 1000);
+
+      // Actualizar formato cuando cambie el tamaño de la ventana
+      window.addEventListener('resize', updateCountdown);
     </script>
   </body>
 </html>
