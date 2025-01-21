@@ -191,6 +191,35 @@
           font-size: min(4vw, 14px);
         }
       }
+
+      .easter-egg-popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.95);
+        border: 2px solid rgb(32, 220, 128);
+        padding: 30px;
+        color: rgb(32, 220, 128);
+        font-family: "Inconsolata", monospace;
+        text-align: center;
+        z-index: 3000;
+        white-space: pre;
+        animation: glow 2s ease-in-out infinite alternate;
+        font-size: min(3vw, 16px);
+      }
+
+      .easter-egg-popup.show {
+        display: block;
+      }
+
+      @media (max-width: 768px) {
+        .easter-egg-popup {
+          font-size: min(4vw, 14px);
+          padding: 20px;
+        }
+      }
     </style>
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
     <script src="//unpkg.com/globe.gl"></script>
@@ -234,6 +263,14 @@
 ║                                ║
 ╚════════════════════════════════╝</div>
     </div>
+    <div class="easter-egg-popup" id="easter-egg">
+╔══════════════════════════════════════════╗
+║                                          ║
+║      La fiesta del coso collective       ║
+║         será en San Francisco...         ║
+║           esperá la fecha ;)             ║
+║                                          ║
+╚══════════════════════════════════════════╝</div>
     <script type="module">
       // Crear textura ASCII
       const asciiArt = `,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,:,,,,,,,,,,,,,,,:::::,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -428,6 +465,55 @@ ${seconds.toString().padStart(2, '0')} Segundos`;
             popup.classList.remove('show');
           }, 2000);
         });
+      });
+
+      // Easter egg
+      let clickCount = 0;
+      let lastClickTime = 0;
+      const CLICK_THRESHOLD = 5; // Número de clics necesarios
+      const CLICK_TIMEOUT = 2000; // Tiempo máximo entre clics (2 segundos)
+      const easterEgg = document.getElementById('easter-egg');
+      
+      document.getElementById('globeViz').addEventListener('click', (e) => {
+        const currentTime = new Date().getTime();
+        
+        if (currentTime - lastClickTime > CLICK_TIMEOUT) {
+          clickCount = 1;
+        } else {
+          clickCount++;
+        }
+        
+        lastClickTime = currentTime;
+        
+        if (clickCount >= CLICK_THRESHOLD) {
+          easterEgg.classList.add('show');
+          setTimeout(() => {
+            easterEgg.classList.remove('show');
+            clickCount = 0;
+          }, 3000);
+        }
+      });
+
+      // También manejar toques en móviles
+      document.getElementById('globeViz').addEventListener('touchend', (e) => {
+        e.preventDefault(); // Prevenir zoom en móviles
+        const currentTime = new Date().getTime();
+        
+        if (currentTime - lastClickTime > CLICK_TIMEOUT) {
+          clickCount = 1;
+        } else {
+          clickCount++;
+        }
+        
+        lastClickTime = currentTime;
+        
+        if (clickCount >= CLICK_THRESHOLD) {
+          easterEgg.classList.add('show');
+          setTimeout(() => {
+            easterEgg.classList.remove('show');
+            clickCount = 0;
+          }, 3000);
+        }
       });
     </script>
   </body>
