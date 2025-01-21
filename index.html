@@ -68,6 +68,55 @@
       #textureCanvas {
         display: none;
       }
+      .buttons-container {
+        position: fixed;
+        bottom: 120px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px;
+        z-index: 1000;
+      }
+
+      .ascii-button {
+        background: transparent;
+        border: 2px solid rgb(32, 220, 128);
+        color: rgb(32, 220, 128);
+        font-family: "Inconsolata", monospace;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: min(3vw, 16px);
+        text-shadow: 0 0 5px rgba(32, 220, 128, 0.5);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 120px;
+        transition: all 0.3s ease;
+        animation: glow 2s ease-in-out infinite alternate;
+      }
+
+      .ascii-button.disabled {
+        border-color: rgba(32, 220, 128, 0.3);
+        color: rgba(32, 220, 128, 0.3);
+        cursor: not-allowed;
+        animation: none;
+        text-shadow: none;
+      }
+
+      .ascii-button.disabled:hover {
+        transform: none;
+        background: transparent;
+      }
+
+      .ascii-button::before {
+        content: "[ ";
+      }
+
+      .ascii-button::after {
+        content: " ]";
+      }
+
       @media (max-width: 768px) {
         #ascii-title {
           font-size: min(2vw, 8px);
@@ -79,6 +128,47 @@
           display: flex;
           flex-direction: column;
           gap: 5px;
+        }
+        .buttons-container {
+          bottom: 150px;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .ascii-button {
+          font-size: min(4vw, 14px);
+          padding: 8px 16px;
+        }
+      }
+
+      .ascii-popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.9);
+        border: 2px solid rgb(32, 220, 128);
+        padding: 20px;
+        color: rgb(32, 220, 128);
+        font-family: "Inconsolata", monospace;
+        text-align: center;
+        z-index: 2000;
+        white-space: pre;
+        animation: glow 2s ease-in-out infinite alternate;
+      }
+
+      .ascii-popup.show {
+        display: block;
+      }
+
+      .ascii-popup-content {
+        margin: 10px 0;
+        font-size: min(3vw, 16px);
+      }
+
+      @media (max-width: 768px) {
+        .ascii-popup-content {
+          font-size: min(4vw, 14px);
         }
       }
     </style>
@@ -108,6 +198,19 @@
     <canvas id="textureCanvas"></canvas>
     <div id="globeViz"></div>
     <pre id="countdown"></pre>
+    <div class="buttons-container">
+      <a href="#" class="ascii-button disabled" id="help-button" onclick="return false;">¿VAS A ESTAR?</a>
+      <a href="#" class="ascii-button disabled" id="store-button" onclick="return false;">IR A LA TIENDA</a>
+    </div>
+    <div class="ascii-popup" id="popup">
+      <div class="ascii-popup-content">
+╔════════════════════════════════╗
+║                                ║
+║     Se desbloqueará cuando     ║
+║    termine la cuenta regresiva  ║
+║                                ║
+╚════════════════════════════════╝</div>
+    </div>
     <script type="module">
       // Crear textura ASCII
       const asciiArt = `,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,:,,,,,,,,,,,,,,,:::::,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -250,6 +353,29 @@ SSSSSSSS%%%%%%%%%%%%???%%%*+;;%SSSSSSSS%??**++*+++**+++;;:::;++++:::::::::::::::
         
         const countdownEl = document.getElementById('countdown');
         
+        if (diff <= 0) {
+          // Desbloquear botones
+          document.getElementById('help-button').classList.remove('disabled');
+          document.getElementById('store-button').classList.remove('disabled');
+          document.getElementById('help-button').onclick = null;
+          document.getElementById('store-button').onclick = null;
+          document.getElementById('help-button').href = "#ayuda"; // Cambiar por la URL real
+          document.getElementById('store-button').href = "#tienda"; // Cambiar por la URL real
+          
+          countdownEl.innerHTML = "¡EVENTO INICIADO!";
+          clearInterval(countdownInterval);
+          
+          // Remover event listeners de los botones
+          const disabledButtons = document.querySelectorAll('.ascii-button.disabled');
+          disabledButtons.forEach(button => {
+            button.replaceWith(button.cloneNode(true));
+          });
+          
+          popup.remove(); // Eliminar el popup cuando se desbloqueen los botones
+          
+          return;
+        }
+        
         if (window.innerWidth <= 768) {
           countdownEl.innerHTML = `
 ${days.toString().padStart(2, '0')} Días
@@ -262,10 +388,24 @@ ${seconds.toString().padStart(2, '0')} Segundos`;
       }
 
       updateCountdown();
-      setInterval(updateCountdown, 1000);
+      const countdownInterval = setInterval(updateCountdown, 1000);
 
       // Actualizar formato cuando cambie el tamaño de la ventana
       window.addEventListener('resize', updateCountdown);
+
+      // Funcionalidad del popup
+      const popup = document.getElementById('popup');
+      const disabledButtons = document.querySelectorAll('.ascii-button.disabled');
+
+      disabledButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          popup.classList.add('show');
+          setTimeout(() => {
+            popup.classList.remove('show');
+          }, 2000);
+        });
+      });
     </script>
   </body>
 </html>
